@@ -23,7 +23,7 @@
   "build": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
   "test": "react-scripts test",
   "eject": "react-scripts eject"
-}
+},
     "start": "react-scripts start",
     "startNode17": "react-scripts --openssl-legacy-provider start",
     "build": "build": "react-scripts --openssl-legacy-provider build",
