@@ -8,15 +8,16 @@ const products = [
     name: 'Apple Pie',
     description: 'You know what this is. Pie. Apples. Apple pie.',
     price: 3,
+    image: 'https://images.unsplash.com/photo-1562004760-aceed7bb0d14?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
   },
   {
     id: 2,
     name: 'Lemon Meringue Pie',
     description: 'Non-contractual picture. Order at your own risk.',
     price: 5,
+    image: 'https://images.unsplash.com/photo-1621947083187-9a4c2d1a4f50?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
   },
 ];
-
 const App: React.FC = () => {
   const handleSignIn = () => {
     const Pi = (window as any).Pi;
