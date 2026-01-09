@@ -23,21 +23,21 @@ const App: React.FC = () => {
   const handleSignIn = () => {
     const Pi = (window as any).Pi;
     if (!Pi || !Pi.authenticate) {
-      alert("Opening in Pi Browser for full experience...");
+      alert("Please open this app in the official Pi Browser to sign in! 😊");
       return;
     }
     Pi.authenticate(['username'], (auth: any) => {
-      alert(`Hello ${auth.user.username}! 🎉 You are signed in!`);
+      alert(`Welcome ${auth.user.username}! 🎉 You are signed in!`);
       window.location.reload();
     }).catch(() => {
-      alert("Sign in cancelled or failed. Try again.");
+      alert("Sign in cancelled. Try again!");
     });
   };
 
   const showRewardedAd = async () => {
     const Pi = (window as any).Pi;
     if (!Pi || !Pi.showAd) {
-      alert("Ad feature only works in Pi Browser.");
+      alert("Ad rewards only work in the official Pi Browser! 😊");
       return;
     }
     try {
@@ -49,7 +49,7 @@ const App: React.FC = () => {
       if (response?.mediator_ack_status === "granted") {
         alert("Ad watched! 🎉 You earned a reward!");
       } else {
-        alert("Ad not completed — no reward.");
+        alert("Ad not completed — no reward");
       }
     } catch (error) {
       alert("Ad not available right now.");
@@ -57,7 +57,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px', textAlign: 'center', fontFamily: 'sans-serif' }}>
+    <div style={{ padding: '20px', textAlign: 'center', fontFamily: 'sans-serif', background: '#f5f5f5', minHeight: '100vh' }}>
       <button 
         onClick={handleSignIn}
         style={{
@@ -76,32 +76,32 @@ const App: React.FC = () => {
         Sign in with Pi
       </button>
 
-      <h1 style={{ marginTop: '60px', color: '#6a0dad' }}>Pi Bakery Demo</h1>
+      <h1 style={{ marginTop: '60px', color: '#6a0dad', fontSize: '36px' }}>Pi Bakery Demo</h1>
 
-      <div style={{ display: 'grid', gap: '30px', margin: '40px auto', maxWidth: '800px' }}>
+      <div style={{ display: 'grid', gap: '30px', margin: '40px auto', maxWidth: '900px', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
         {products.map(product => (
-          <div key={product.id} style={{ border: '2px solid #ddd', borderRadius: '16px', padding: '20px', background: '#fff' }}>
+          <div key={product.id} style={{ border: '2px solid #ddd', borderRadius: '16px', padding: '20px', background: 'white', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
             <img 
               src={product.image} 
               alt={product.name}
               style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: '12px' }}
             />
-            <h2 style={{ margin: '20px 0 10px' }}>{product.name}</h2>
-            <p style={{ color: '#555' }}>{product.description}</p>
-            <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#6a0dad' }}>{product.price} Test-π</p>
-            <button style={{ padding: '12px 30px', background: '#6a0dad', color: 'white', border: 'none', borderRadius: '12px', fontSize: '18px' }}>
+            <h2 style={{ margin: '20px 0 10px', fontSize: '28px' }}>{product.name}</h2>
+            <p style={{ color: '#555', fontSize: '18px' }}>{product.description}</p>
+            <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#6a0dad', margin: '20px 0' }}>{product.price} Test-π</p>
+            <button style={{ padding: '14px 32px', background: '#6a0dad', color: 'white', border: 'none', borderRadius: '12px', fontSize: '20px', cursor: 'pointer' }}>
               Order with Pi
             </button>
           </div>
         ))}
       </div>
 
-      <div style={{ margin: '80px auto', padding: '40px', background: '#f0e6ff', borderRadius: '20px', maxWidth: '600px' }}>
-        <h2 style={{ color: '#6a0dad' }}>Special Reward Offer!</h2>
-        <p style={{ fontSize: '18px', margin: '20px 0' }}>Watch a short ad to earn a free reward!</p>
+      <div style={{ margin: '80px auto', padding: '40px', background: '#e6d4ff', borderRadius: '20px', maxWidth: '700px', boxShadow: '0 6px 15px rgba(106,13,173,0.2)' }}>
+        <h2 style={{ color: '#6a0dad', fontSize: '32px' }}>Special Reward Offer!</h2>
+        <p style={{ fontSize: '20px', margin: '20px 0' }}>Watch a short ad to earn a free reward!</p>
         <button 
           onClick={showRewardedAd}
-          style={{ padding: '20px 50px', fontSize: '24px', background: '#6a0dad', color: 'white', border: 'none', borderRadius: '20px' }}
+          style={{ padding: '20px 60px', fontSize: '26px', background: '#6a0dad', color: 'white', border: 'none', borderRadius: '20px', cursor: 'pointer' }}
         >
           Watch Ad for Free Reward!
         </button>
