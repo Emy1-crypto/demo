@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pi SDK Quick Test</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js" async></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f8f9fa; }
+    h1 { color: #4a148c; }
+    #status { font-size: 1.3em; margin: 40px auto; padding: 25px; border: 3px solid #ccc; border-radius: 10px; max-width: 500px; background: white; }
+    button { padding: 14px 40px; background: #6f42c1; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; margin-top: 20px; }
+    button:hover { background: #5a32a3; }
+  </style>
+</head>
+<body>
+  <h1>Pi SDK Diagnostic Test</h1>
+  <p>This page tests if the Pi SDK loads correctly. Open ONLY in Pi Browser.</p>
+  <div id="status">Checking for Pi SDK...</div>
+
+  <button onclick="checkPi()">Re-Check Pi SDK</button>
+
+  <script>
+    function checkPi() {
+      const status = document.getElementById('status');
+      if (window.Pi) {
+        status.innerHTML = '✅ SUCCESS: Pi SDK is loaded!<br><br>Ready status: ' + (Pi.isReady ? 'Yes (fully ready)' : 'Loaded but not ready yet – try calling Pi.init()');
+        status.style.borderColor = '#28a745';
+        status.style.color = '#28a745';
+        status.style.background = '#d4edda';
+      } else {
+        status.innerHTML = '❌ Pi SDK NOT detected (window.Pi is undefined).<br><br>Common fixes:<br>1. Confirm you are in the official Pi Browser app (not Chrome/Safari)<br>2. Make sure you are signed in to your Pi account<br>3. Register this exact domain in Developer Portal: https://demo-2-6jw2.onrender.com<br>4. Wait 1-2 min after saving in portal, then refresh';
+        status.style.borderColor = '#dc3545';
+        status.style.color = '#dc3545';
+        status.style.background = '#f8d7da';
+      }
+    }
+
+    // Run check automatically when page loads
+    window.addEventListener('load', checkPi);
+  </script>
+</body>
+</html>
