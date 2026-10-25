@@ -5,10 +5,10 @@ import './index.css';
 const App: http://React.FC = () => {
   const = useState(false);
   const = useState<any>(null);
-  const = useState('');
-  const = useState(true);[piReady][setPiReady][user][setUser][error][setError][loading][setLoading]
-
-  useEffect(() => {
+  const = useState(false);
+const = useState(null);
+const = useState('');
+const = useState(true);[piReady][setPiReady][user][setUser][error][setError][loading][setLoading]
     const initPi = async () => {
       for (let i = 0; i < 20; i++) {
         if ((window as any).Pi) break;
