@@ -1,77 +1,63 @@
-import { useState } from 'react';
-
-declare global {
-  interface Window { Pi: any; }
-}
+import { useState, useEffect } from "react";
 
 export default function App() {
-  const [user, setUser] = useState<any>(null);
-  const [status, setStatus] = useState("");
+  const [user, setUser]: any = useState(null);
+  const [status, setStatus] = useState("Ready");
 
-  const isPiBrowser = typeof window !== 'undefined' && window.Pi;
+  useEffect(() => {
+    if ((window as any).Pi) {
+      (window as any).Pi.init({ version: "2.0", sandbox: true });
+      setStatus("Ready - Tap Login in Pi Browser");
+    } else {
+      setStatus("Open in Pi Browser App, not Chrome");
+    }
+  }, []);
 
   const authenticate = async () => {
-    if (!window.Pi) {
-      setStatus("Please open this link inside Pi Browser app, not Chrome.");
-      return;
-    }
     try {
       setStatus("Authenticating...");
-      window.Pi.init({ version: "2.0", sandbox: true });
-      const auth = await window.Pi.authenticate(['username', 'payments'], (payment:any) => {
-        console.log("Incomplete payment found:", payment);
-      });
+      const onIncomplete = (payment: any) => {
+        console.log(payment);
+        return;
+      };
+      const auth = await (window as any).Pi.authenticate(['username', 'payments'], onIncomplete);
       setUser(auth.user);
-      setStatus(`Welcome ${auth.user.username}!`);
-    } catch (e:any) {
-      setStatus("Auth failed: " + e.message);
+      setStatus("Welcome " + auth.user.username);
+    } catch (e: any) {
+      setStatus("Failed: " + e.message);
     }
   };
 
   const pay = async () => {
-    if (!window.Pi) {
-      setStatus("Open in Pi Browser to test payment.");
-      return;
-    }
     try {
       setStatus("Creating payment...");
-      await window.Pi.createPayment({
+      await (window as any).Pi.createPayment({
         amount: 1,
-        memo: "Test payment for Pi Demo",
+        memo: "Test payment",
         metadata: { type: "test" }
       }, {
-        onReadyForServerApproval: (paymentId:string) => {
-          setStatus("Payment approved on server...");
-        },
-        onReadyForServerCompletion: (paymentId:string, txid:string) => {
-          setStatus(`Payment completed! TX: ${txid}`);
-        },
-        onCancel: (paymentId:string) => {
-          setStatus("Payment cancelled: " + paymentId);
-        },
-        onError: (error:any) => {
-          setStatus("Payment error: " + error.message);
-        }
+        onReadyForServerApproval: (id: string) => setStatus("Approving " + id),
+        onReadyForServerCompletion: (id: string, txid: string) => setStatus("Completed " + txid),
+        onCancel: () => setStatus("Cancelled"),
+        onError: (err: any) => setStatus("Error " + err.message)
       });
-    } catch (e:any) {
-      setStatus("Pay error: " + e.message);
+    } catch (e: any) {
+      setStatus("Pay error " + e.message);
     }
   };
 
   return (
-    <div style={{padding:30, textAlign:'center', fontFamily:'sans-serif', maxWidth:400, margin:'auto'}}>
-      <h1>Pi Demo App</h1>
-      {!isPiBrowser && <p style={{color:'orange', background:'#fff3cd', padding:10, borderRadius:8}}>Open in Pi Browser for full features</p>}
-      {user ? (
-        <>
-          <h2>Hi, {user.username}!</h2>
-          <button onClick={pay} style={{padding:'14px 28px', background:'#6a1b9a', color:'white', border:'none', borderRadius:10, fontSize:16, width:'100%', marginTop:10}}>Pay 1 Pi (Test)</button>
-        </>
+    <div style={{ padding: 20, textAlign: "center" }}>
+      <h1>Pi Demo</h1>
+      <p>{status}</p>
+      {!user ? (
+        <button onClick={authenticate} style={{ padding: "15px 30px" }}>Login with Pi</button>
       ) : (
-        <button onClick={authenticate} style={{padding:'14px 28px', background:'#ff8f00', color:'white', border:'none', borderRadius:10, fontSize:16, width:'100%', marginTop:20}}>Login with Pi</button>
+        <>
+          <p>{user.username}</p>
+          <button onClick={pay} style={{ padding: "15px 30px", background: "orange" }}>Test Pay 1 Pi</button>
+        </>
       )}
-      {status && <p style={{marginTop:20}}>{status}</p>}
-      <p style={{marginTop:40, fontSize:12, color:'#888'}}>Build: Fixed | Sandbox: true</p>
     </div>
   );
-            }
+}
