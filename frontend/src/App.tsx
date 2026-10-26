@@ -1,48 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+const Pi = (window as any).Pi;
+if (Pi) { Pi.init({ version: "2.0", sandbox: true }); }
 
 export default function App() {
   const [user, setUser]: any = useState(null);
-  const [status, setStatus] = useState("Ready");
-
-  useEffect(() => {
-    if ((window as any).Pi) {
-      (window as any).Pi.init({ version: "2.0", sandbox: true });
-      setStatus("Ready - Tap Login in Pi Browser");
-    } else {
-      setStatus("Open in Pi Browser App, not Chrome");
-    }
-  }, []);
+  const [status, setStatus] = useState(Pi ? "Pi SDK Loaded - Tap Login" : "Open in Pi Browser App");
 
   const authenticate = async () => {
     try {
+      if (!Pi) { setStatus("No Pi SDK - open in Pi Browser"); return; }
       setStatus("Authenticating...");
-      const onIncomplete = (payment: any) => {
-        console.log(payment);
-        return;
-      };
-      const auth = await (window as any).Pi.authenticate(['username', 'payments'], onIncomplete);
+      const auth = await Pi.authenticate(['username', 'payments'], (p:any)=>{ console.log(p); });
       setUser(auth.user);
       setStatus("Welcome " + auth.user.username);
     } catch (e: any) {
-      setStatus("Failed: " + e.message);
-    }
-  };
-
-  const pay = async () => {
-    try {
-      setStatus("Creating payment...");
-      await (window as any).Pi.createPayment({
-        amount: 1,
-        memo: "Test payment",
-        metadata: { type: "test" }
-      }, {
-        onReadyForServerApproval: (id: string) => setStatus("Approving " + id),
-        onReadyForServerCompletion: (id: string, txid: string) => setStatus("Completed " + txid),
-        onCancel: () => setStatus("Cancelled"),
-        onError: (err: any) => setStatus("Error " + err.message)
-      });
-    } catch (e: any) {
-      setStatus("Pay error " + e.message);
+      console.log(e);
+      setStatus("Error: " + (e?.message || JSON.stringify(e)));
     }
   };
 
@@ -50,14 +23,8 @@ export default function App() {
     <div style={{ padding: 20, textAlign: "center" }}>
       <h1>Pi Demo</h1>
       <p>{status}</p>
-      {!user ? (
-        <button onClick={authenticate} style={{ padding: "15px 30px" }}>Login with Pi</button>
-      ) : (
-        <>
-          <p>{user.username}</p>
-          <button onClick={pay} style={{ padding: "15px 30px", background: "orange" }}>Test Pay 1 Pi</button>
-        </>
-      )}
+      <button onClick={authenticate} style={{ padding: "15px 30px", fontSize: 18 }}>Login with Pi</button>
+      {user && <p>Logged in as: {user.username}</p>}
     </div>
   );
 }
